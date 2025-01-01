@@ -1,0 +1,27 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - my_pages
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Jekyll
+        uses: helaili/jekyll-action@v2
+
+      - name: Build and Deploy
+        run: |
+          bundle install
+          bundle exec jekyll build
+          echo 'my-pages-domain.com' > _site/CNAME
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add .
+          git commit -m "Deploy GitHub Pages"
+          git push --force origin HEAD:gh-pages
